@@ -90,6 +90,10 @@ public class PlayerController : MonoBehaviourPun
                 isSprinting = false;
             }
         }
+        else
+        {
+            velocity.y += gravity * Time.deltaTime;
+        }
         
         if (!isSprinting)
         {
@@ -114,7 +118,7 @@ public class PlayerController : MonoBehaviourPun
         }
 
         // Apply gravity
-        velocity.y += gravity * Time.deltaTime;
+        //velocity.y += gravity * Time.deltaTime;
 
         // Move the player vertically
         controller.Move(velocity * Time.deltaTime);
