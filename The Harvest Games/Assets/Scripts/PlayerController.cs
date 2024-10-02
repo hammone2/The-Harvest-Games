@@ -70,7 +70,6 @@ public class PlayerController : MonoBehaviourPun
             {
                 isGrounded = false;
                 velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-                return;
             }
 
             if (Input.GetKey(KeyCode.LeftShift))
@@ -92,6 +91,7 @@ public class PlayerController : MonoBehaviourPun
         else
         {
             velocity.y += gravity * Time.deltaTime;
+            isSprinting = false;
         }
         
         if (!isSprinting)
@@ -106,13 +106,6 @@ public class PlayerController : MonoBehaviourPun
         // Apply movement
         Vector3 movement = move * currentSpeed * Time.deltaTime;
         controller.Move(movement);
-
-        // Handle jumping
-        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
-        {
-            isGrounded = false;
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
 
         // Move the player vertically
         controller.Move(velocity * Time.deltaTime);

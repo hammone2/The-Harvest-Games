@@ -127,9 +127,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  walkSpeed: 6
-  sprintSpeed: 12
-  jumpHeight: 2
+  walkSpeed: 5
+  sprintSpeed: 10
+  jumpHeight: 1
   gravity: -9.81
   jumpForce: 5
   curHp: 100
