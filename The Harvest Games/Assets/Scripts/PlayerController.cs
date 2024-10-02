@@ -65,6 +65,15 @@ public class PlayerController : MonoBehaviourPun
         // Determine speed (only sprint when moving forward)
         if (isGrounded)
         {
+            //velocity.y = 0;
+            // Handle jumping
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                isGrounded = false;
+                velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+                return;
+            }
+
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 if (moveZ > 0)
