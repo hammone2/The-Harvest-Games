@@ -65,7 +65,6 @@ public class PlayerController : MonoBehaviourPun
         // Determine speed (only sprint when moving forward)
         if (isGrounded)
         {
-            //velocity.y = 0;
             // Handle jumping
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -104,8 +103,6 @@ public class PlayerController : MonoBehaviourPun
             currentSpeed = sprintSpeed; // Sprint speed when moving forward
         }
 
-        //Debug.Log(currentSpeed);
-
         // Apply movement
         Vector3 movement = move * currentSpeed * Time.deltaTime;
         controller.Move(movement);
@@ -116,9 +113,6 @@ public class PlayerController : MonoBehaviourPun
             isGrounded = false;
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
-
-        // Apply gravity
-        //velocity.y += gravity * Time.deltaTime;
 
         // Move the player vertically
         controller.Move(velocity * Time.deltaTime);
