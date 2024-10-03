@@ -129,6 +129,8 @@ MonoBehaviour:
   id: 0
   walkSpeed: 5
   sprintSpeed: 10
+  sprintStrafeSpeed: 2
+  deceleration: 3.3
   jumpHeight: 1
   gravity: -9.81
   jumpForce: 5

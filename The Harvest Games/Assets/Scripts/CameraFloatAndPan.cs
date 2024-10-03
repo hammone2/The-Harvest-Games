@@ -19,7 +19,7 @@ public class CameraFloatAndPan : MonoBehaviour
     {
         // doing this so the camera's origin is clamped to its original y position/rotation.
         startYPos = transform.position.y;
-        startYRot = transform.rotation.y;
+        startYRot = transform.rotation.eulerAngles.y;
     }
 
     void Update()

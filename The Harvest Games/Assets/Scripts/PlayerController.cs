@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviourPun
     [Header("Movement Stuff")]
     public float walkSpeed;
     public float sprintSpeed;
+    public float sprintStrafeSpeed;
+    public float deceleration;
     public float jumpHeight = 2f;
     public float gravity = -9.81f;
     public float jumpForce;
@@ -52,16 +54,6 @@ public class PlayerController : MonoBehaviourPun
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 
-        // Create a movement vector
-        Vector3 move = transform.right * moveX + transform.forward * moveZ;
-
-        // Normalize the movement vector
-        if (move.magnitude > 1)
-        {
-            move.Normalize();
-        }
-
-
         // Determine speed (only sprint when moving forward)
         if (isGrounded)
         {
@@ -71,36 +63,33 @@ public class PlayerController : MonoBehaviourPun
                 isGrounded = false;
                 velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             }
-
-            if (Input.GetKey(KeyCode.LeftShift))
+            
+            // Handle Sprinting
+            if (Input.GetKey(KeyCode.LeftShift) && moveZ > 0)
             {
-                if (moveZ > 0)
-                {
-                    isSprinting = true;
-                }
-                else
-                {
-                    isSprinting = false;
-                }
+                isSprinting = true;
             }
             else
             {
                 isSprinting = false;
             }
+
         }
         else
         {
             velocity.y += gravity * Time.deltaTime;
             isSprinting = false;
         }
-        
-        if (!isSprinting)
+
+        currentSpeed = isSprinting ? sprintSpeed : walkSpeed;
+
+        // Create a movement vector
+        Vector3 move = transform.right * moveX + transform.forward * moveZ;
+
+        // Normalize the movement vector
+        if (move.magnitude > 1)
         {
-            currentSpeed = walkSpeed; // Default to walk speed
-        }
-        else
-        {
-            currentSpeed = sprintSpeed; // Sprint speed when moving forward
+            move.Normalize();
         }
 
         // Apply movement
@@ -109,7 +98,6 @@ public class PlayerController : MonoBehaviourPun
 
         // Move the player vertically
         controller.Move(velocity * Time.deltaTime);
-
 
         // Handle Shooting
         if (Input.GetMouseButtonDown(0))
