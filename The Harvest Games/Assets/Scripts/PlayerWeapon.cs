@@ -57,7 +57,12 @@ public class PlayerWeapon : MonoBehaviour
     [PunRPC]
     public void GiveAmmo(int ammoToGive)
     {
-        activeWeapon.curAmmo = Mathf.Clamp(activeWeapon.curAmmo + ammoToGive, 0, activeWeapon.maxAmmo);
+        //activeWeapon.curAmmo = Mathf.Clamp(activeWeapon.curAmmo + ammoToGive, 0, activeWeapon.maxAmmo);
+        activeWeapon.curAmmo += ammoToGive;
+        if (activeWeapon.curAmmo > activeWeapon.maxAmmo)
+        {
+            activeWeapon.curAmmo = activeWeapon.maxAmmo;
+        }
         // update the ammo text
         GameUI.instance.UpdateAmmoText();
     }

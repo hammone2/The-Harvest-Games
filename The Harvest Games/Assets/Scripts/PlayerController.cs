@@ -26,10 +26,7 @@ public class PlayerController : MonoBehaviourPun
     private bool isZoomed = false;
     private float bobAmount = 0.2f;
     private float bobSpeed = 24.0f;
-    private float swayAmount = 0.1f;
-    private float swaySpeed = 6.0f;
     private float headStartYPos;
-    private float headStartZRot;
     private Vector3 headOrigin;
     private float offset = 0.0f;
 
@@ -52,7 +49,6 @@ public class PlayerController : MonoBehaviourPun
     {
         headOrigin = Camera.main.transform.localPosition;
         headStartYPos = Camera.main.transform.localPosition.y;
-        headStartZRot = Camera.main.transform.rotation.eulerAngles.z;
     }
 
     void Update()
@@ -157,10 +153,8 @@ public class PlayerController : MonoBehaviourPun
             //Handle View bobbing
                 // Calculate the new Y position based on the sine wave
             float newYPos = bobAmount * Mathf.Sin(Time.time * bobSpeed + offset);
-            float newZRot = swayAmount * Mathf.Sin(Time.time * swaySpeed + offset);
                 // Update the position of the GameObject
             Camera.main.transform.localPosition = new Vector3(Camera.main.transform.localPosition.x, headStartYPos + newYPos, Camera.main.transform.localPosition.z);
-            Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.rotation.x, Camera.main.transform.rotation.y, headStartZRot + newZRot);
         }
         else
         {
