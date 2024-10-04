@@ -43,7 +43,7 @@ public class GameUI : MonoBehaviour
 
     public void UpdateAmmoText()
     {
-        ammoText.text = player.weapon.curAmmo + " / " + player.weapon.maxAmmo;
+        ammoText.text = player.weapon.activeWeapon.curAmmo + " / " + player.weapon.activeWeapon.maxAmmo;
     }
 
     public void SetWinText(string winnerName)

@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviourPun
     [Header("Components")]
     public CharacterController controller;
     public MeshRenderer mr;
+    public GameObject weaponManager;
 
     // Start is called before the first frame update
     void Start()
@@ -100,8 +101,31 @@ public class PlayerController : MonoBehaviourPun
         controller.Move(velocity * Time.deltaTime);
 
         // Handle Shooting
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
             weapon.TryShoot();
+
+        // Handle Weapon Switching
+        int previousWeapon = weapon.selectedWeapon;
+
+        if (Input.GetAxisRaw("Mouse ScrollWheel") > 0f)
+        {
+            if (weapon.selectedWeapon >= weaponManager.transform.childCount - 1)
+                weapon.selectedWeapon = 0;
+            else
+                weapon.selectedWeapon++;
+        }
+        if (Input.GetAxis("Mouse ScrollWheel") < 0f)
+        {
+            if (weapon.selectedWeapon <= 0)
+                weapon.selectedWeapon = weaponManager.transform.childCount - 1;
+            else
+                weapon.selectedWeapon--;
+        }
+
+        if (previousWeapon != weapon.selectedWeapon)
+        {
+            weapon.SelectWeapon(weapon.selectedWeapon);
+        }
     }
 
     [PunRPC]

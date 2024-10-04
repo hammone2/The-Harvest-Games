@@ -6,40 +6,29 @@ using Photon.Realtime;
 
 public class PlayerWeapon : MonoBehaviour
 {
-    [Header("Stats")]
-    public int damage;
-    public int curAmmo;
-    public int maxAmmo;
-    public float bulletSpeed;
-    public float shootRate;
-    private float lastShootTime;
-    public GameObject bulletPrefab;
+    public int selectedWeapon = 0;
+    public Gun activeWeapon;
     public Transform bulletSpawnPos;
-    private PlayerController player;
+    public PlayerController player;
     void Awake()
     {
-        // get required components
+        // Ensure player is assigned properly
         player = GetComponent<PlayerController>();
     }
+
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        SelectWeapon(0);
     }
 
     public void TryShoot()
     {
         // can we shoot?
-        if (curAmmo <= 0 || Time.time - lastShootTime < shootRate)
+        if (activeWeapon.curAmmo <= 0 || Time.time - activeWeapon.lastShootTime < activeWeapon.shootRate)
             return;
-        curAmmo--;
-        lastShootTime = Time.time;
+        activeWeapon.curAmmo--;
+        activeWeapon.lastShootTime = Time.time;
         // update the ammo UI
         GameUI.instance.UpdateAmmoText();
         // spawn the bullet
@@ -50,21 +39,46 @@ public class PlayerWeapon : MonoBehaviour
     void SpawnBullet(Vector3 pos, Vector3 dir)
     {
         // spawn and orientate it
-        GameObject bulletObj = Instantiate(bulletPrefab, pos, Quaternion.identity);
+        GameObject bulletObj = Instantiate(activeWeapon.bulletPrefab, pos, Quaternion.identity);
         bulletObj.transform.forward = dir;
 
         // get bullet script
         Bullet bulletScript = bulletObj.GetComponent<Bullet>();
         // initialize it and set the velocity
-        bulletScript.Initialize(damage, player.id, player.photonView.IsMine);
-        bulletScript.rig.velocity = dir * bulletSpeed;
+        bulletScript.Initialize(activeWeapon.damage, player.id, player.photonView.IsMine);
+        bulletScript.rig.velocity = dir * activeWeapon.bulletSpeed;
     }
 
     [PunRPC]
     public void GiveAmmo(int ammoToGive)
     {
-        curAmmo = Mathf.Clamp(curAmmo + ammoToGive, 0, maxAmmo);
+        activeWeapon.curAmmo = Mathf.Clamp(activeWeapon.curAmmo + ammoToGive, 0, activeWeapon.maxAmmo);
         // update the ammo text
         GameUI.instance.UpdateAmmoText();
+    }
+
+    public void SelectWeapon(int weaponToSelect)
+    {
+        player.photonView.RPC("SwitchWeapon", RpcTarget.All, weaponToSelect);
+    }
+
+    [PunRPC]
+    void SwitchWeapon(int weaponToSwitch)
+    {
+        int i = 0;
+        foreach (Transform weapon in player.weaponManager.transform)
+        {
+            if (i == weaponToSwitch)
+            {
+                weapon.gameObject.SetActive(true);
+                Debug.Log(weapon.name);
+                activeWeapon = weapon.gameObject.GetComponent<Gun>();
+            }
+            else
+            {
+                weapon.gameObject.SetActive(false);
+            }
+            i++;
+        }
     }
 }
