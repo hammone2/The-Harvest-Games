@@ -7,22 +7,12 @@ public class Pickup : MonoBehaviourPun
 {
     public PickupType type;
     public int value;
+    public GameObject gunPrefab;
     public enum PickupType
     {
         Health,
-        Ammo
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Ammo,
+        Gun
     }
 
     void OnTriggerEnter(Collider other)
@@ -37,6 +27,8 @@ public class Pickup : MonoBehaviourPun
                 player.photonView.RPC("Heal", player.photonPlayer, value);
             else if (type == PickupType.Ammo)
                 player.photonView.RPC("GiveAmmo", player.photonPlayer, value);
+            else if (type == PickupType.Gun)
+                player.photonView.RPC("EquipWeapon", player.photonPlayer, gunPrefab);
             // destroy the object
             // PhotonNetwork.Destroy(gameObject);
             // BUG: pickups don't get removed from game and throw error:

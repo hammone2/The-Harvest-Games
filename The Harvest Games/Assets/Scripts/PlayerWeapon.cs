@@ -10,16 +10,21 @@ public class PlayerWeapon : MonoBehaviour
     public Gun activeWeapon;
     public Transform bulletSpawnPos;
     public PlayerController player;
+    public bool isZooming = false;
     void Awake()
     {
-        // Ensure player is assigned properly
         player = GetComponent<PlayerController>();
     }
-
-    // Start is called before the first frame update
     void Start()
     {
         SelectWeapon(0);
+    }
+
+    void Update()
+    {
+        // handle ADS
+        float zoomTarget = isZooming ? activeWeapon.zoom : 60; //60 is the default camera FOV
+        Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, zoomTarget, activeWeapon.zoomSpeed * Time.deltaTime);
     }
 
     public void TryShoot()
@@ -73,6 +78,7 @@ public class PlayerWeapon : MonoBehaviour
                 weapon.gameObject.SetActive(true);
                 Debug.Log(weapon.name);
                 activeWeapon = weapon.gameObject.GetComponent<Gun>();
+                isZooming = false;
             }
             else
             {
@@ -80,5 +86,22 @@ public class PlayerWeapon : MonoBehaviour
             }
             i++;
         }
+    }
+
+    [PunRPC]
+    public void EquipWeapon(GameObject newWeapon)
+    {
+        //create the weapon in the weapon manager
+        GameObject equippedWeapon = Instantiate(newWeapon);
+        equippedWeapon.transform.SetParent(player.weaponManager.transform);
+
+        //set the view model coordinates
+        Gun _gun = equippedWeapon.GetComponent<Gun>();
+        equippedWeapon.transform.localPosition = new Vector3(_gun._x, _gun._y, _gun._z);
+        equippedWeapon.transform.localRotation = Quaternion.identity; // Reset rotation
+
+        //switch to the new weapon
+        int newWeaponSlot = player.weaponManager.transform.childCount - 1;
+        player.photonView.RPC("SwitchWeapon", RpcTarget.All, newWeaponSlot);
     }
 }

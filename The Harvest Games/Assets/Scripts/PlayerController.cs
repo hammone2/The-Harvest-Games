@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviourPun
     private bool isGrounded;
     private bool isSprinting = false;
     private float currentSpeed;
+    private bool isZoomed = false;
 
     [Header("Stats")]
     public int curHp;
@@ -36,12 +37,6 @@ public class PlayerController : MonoBehaviourPun
     public CharacterController controller;
     public MeshRenderer mr;
     public GameObject weaponManager;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     void Update()
     {
@@ -103,6 +98,13 @@ public class PlayerController : MonoBehaviourPun
         // Handle Shooting
         if (Input.GetMouseButton(0))
             weapon.TryShoot();
+
+        // Toggle ADS
+        if (Input.GetMouseButtonDown(1))
+        {
+            isZoomed = !isZoomed;
+            weapon.isZooming = isZoomed;
+        }
 
         // Handle Weapon Switching
         int previousWeapon = weapon.selectedWeapon;
