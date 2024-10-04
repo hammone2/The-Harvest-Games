@@ -82,7 +82,7 @@ MonoBehaviour:
   maxAmmo: 5
   zoom: 8
   zoomSpeed: 4
-  bulletSpeed: 100
+  bulletSpeed: 250
   shootRate: 1.5
   lastShootTime: 0
   bulletPrefab: {fileID: 5874320984981539143, guid: 1c4459928ff8e6b499de8bc4d394d24f, type: 3}

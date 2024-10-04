@@ -79,6 +79,7 @@ public class PlayerWeapon : MonoBehaviour
                 Debug.Log(weapon.name);
                 activeWeapon = weapon.gameObject.GetComponent<Gun>();
                 isZooming = false;
+                GameUI.instance.UpdateAmmoText();
             }
             else
             {

@@ -24,6 +24,16 @@ public class PlayerController : MonoBehaviourPun
     private bool isSprinting = false;
     private float currentSpeed;
     private bool isZoomed = false;
+    private float bobAmount = 0.2f;
+    private float bobSpeed = 24.0f;
+    private float swayAmount = 0.1f;
+    private float swaySpeed = 6.0f;
+    private float headStartYPos;
+    private float headStartZRot;
+    private Vector3 headOrigin;
+    private float offset = 0.0f;
+
+    private Quaternion weaponTargetRotation;
 
     [Header("Stats")]
     public int curHp;
@@ -37,6 +47,13 @@ public class PlayerController : MonoBehaviourPun
     public CharacterController controller;
     public MeshRenderer mr;
     public GameObject weaponManager;
+
+    private void Start()
+    {
+        headOrigin = Camera.main.transform.localPosition;
+        headStartYPos = Camera.main.transform.localPosition.y;
+        headStartZRot = Camera.main.transform.rotation.eulerAngles.z;
+    }
 
     void Update()
     {
@@ -95,7 +112,7 @@ public class PlayerController : MonoBehaviourPun
         // Move the player vertically
         controller.Move(velocity * Time.deltaTime);
 
-        // Handle Shooting
+        /*// Handle Shooting
         if (Input.GetMouseButton(0))
             weapon.TryShoot();
 
@@ -104,7 +121,7 @@ public class PlayerController : MonoBehaviourPun
         {
             isZoomed = !isZoomed;
             weapon.isZooming = isZoomed;
-        }
+        }*/
 
         // Handle Weapon Switching
         int previousWeapon = weapon.selectedWeapon;
@@ -128,6 +145,43 @@ public class PlayerController : MonoBehaviourPun
         {
             weapon.SelectWeapon(weapon.selectedWeapon);
         }
+
+        if (isSprinting)
+        {
+            weaponTargetRotation = Quaternion.Euler(-45f, 0f, 0f);
+
+            //Zoom out
+            isZoomed = false;
+            weapon.isZooming = isZoomed;
+
+            //Handle View bobbing
+                // Calculate the new Y position based on the sine wave
+            float newYPos = bobAmount * Mathf.Sin(Time.time * bobSpeed + offset);
+            float newZRot = swayAmount * Mathf.Sin(Time.time * swaySpeed + offset);
+                // Update the position of the GameObject
+            Camera.main.transform.localPosition = new Vector3(Camera.main.transform.localPosition.x, headStartYPos + newYPos, Camera.main.transform.localPosition.z);
+            Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.rotation.x, Camera.main.transform.rotation.y, headStartZRot + newZRot);
+        }
+        else
+        {
+            weaponTargetRotation = Quaternion.Euler(0f, 0f, 0f);
+
+            // Reset head yPos
+            Camera.main.transform.localPosition = Vector3.MoveTowards(Camera.main.transform.localPosition, headOrigin, bobSpeed * Time.deltaTime);
+
+            // Handle Shooting
+            if (Input.GetMouseButton(0))
+                weapon.TryShoot();
+
+            // Toggle ADS
+            if (Input.GetMouseButtonDown(1))
+            {
+                isZoomed = !isZoomed;
+                weapon.isZooming = isZoomed;
+            }
+        }
+        weaponManager.transform.localRotation = Quaternion.Lerp(weaponManager.transform.localRotation, weaponTargetRotation, Time.deltaTime * 7);
+
     }
 
     [PunRPC]

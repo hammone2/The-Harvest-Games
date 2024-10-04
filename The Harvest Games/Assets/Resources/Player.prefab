@@ -529,6 +529,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7836020305971163081, guid: 906a94dd97b502048a28c7d91135acf4, type: 3}
+      propertyPath: curAmmo
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 8976533383064325483, guid: 906a94dd97b502048a28c7d91135acf4, type: 3}
       propertyPath: m_Name
       value: Handgun
