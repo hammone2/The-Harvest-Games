@@ -361,8 +361,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd45bae5c29022e4fb793e56a885f5e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensX: 5
-  sensY: 5
+  sensX: 10
+  sensY: 10
   minY: -90
   maxY: 90
   spectatorMoveSpeed: 10
